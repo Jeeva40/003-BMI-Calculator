@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI Calculator</title>
+
+  <!-- External stylesheet for all visual styling -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Site header -->
+  <header class="site-header">
+    <h1>BMI Calculator</h1>
+  </header>
+
+  <!-- Main content area containing the calculator -->
+  <main class="calculator">
+
+    <!-- Title and short description of the tool -->
+    <section class="intro">
+      <h2>Check Your Body Mass Index</h2>
+      <p class="description">
+        Enter your height and weight below to calculate your Body Mass Index (BMI)
+        and get a quick indication of your body weight category.
+      </p>
+    </section>
+
+    <!-- Form containing the BMI input fields and action buttons -->
+    <form class="bmi-form" id="bmi-form">
+
+      <!-- Height input field (in centimeters) -->
+      <div class="form-group">
+        <label for="height">Height (cm)</label>
+        <input
+          type="number"
+          id="height"
+          name="height"
+          placeholder="e.g. 170"
+          min="1"
+          step="0.1"
+          required
+        />
+      </div>
+
+      <!-- Weight input field (in kilograms) -->
+      <div class="form-group">
+        <label for="weight">Weight (kg)</label>
+        <input
+          type="number"
+          id="weight"
+          name="weight"
+          placeholder="e.g. 65"
+          min="1"
+          step="0.1"
+          required
+        />
+      </div>
+
+      <!-- Action buttons: Calculate and Reset -->
+      <div class="form-actions">
+        <button type="button" id="calculate-btn">Calculate BMI</button>
+        <button type="reset" id="reset-btn">Reset</button>
+      </div>
+
+    </form>
+
+    <!-- Result card: populated dynamically by script.js, empty on load -->
+    <section class="result-card" id="result-card" aria-live="polite">
+      <!-- BMI value, category, and message will be inserted here by JavaScript -->
+    </section>
+
+  </main>
+
+  <!-- Site footer -->
+  <footer class="site-footer">
+    <p>&copy; 2026 BMI Calculator. All rights reserved.</p>
+  </footer>
+
+  <!-- External JavaScript for calculator logic -->
+  <script src="script.js"></script>
+</body>
+</html>
