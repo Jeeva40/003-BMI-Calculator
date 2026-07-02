@@ -89,19 +89,47 @@ body {
 .site-header {
   width: 100%;
   max-width: 520px;
-  text-align: center;
   padding: 12px 0 8px;
+}
+
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }
 
 .site-header h1 {
   font-family: var(--font-heading);
   font-size: 1.9rem;
   font-weight: 700;
+  text-align: center;
   background: linear-gradient(90deg, var(--color-blue) 0%, var(--color-green) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   letter-spacing: -0.02em;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 1.1rem;
+  line-height: 1;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px) rotate(-8deg);
+  box-shadow: var(--shadow-soft);
 }
 
 .site-footer {
@@ -153,6 +181,43 @@ body {
 }
 
 /* --------------------------------------------------------------------------
+   5b. Unit system toggle
+   -------------------------------------------------------------------------- */
+.unit-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 22px;
+  background: #f3f4f6;
+  border-radius: var(--radius-sm);
+}
+
+.unit-btn {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius-sm) - 4px);
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.unit-btn:hover {
+  color: var(--color-text);
+}
+
+.unit-btn.is-active {
+  color: var(--color-blue-dark);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+/* --------------------------------------------------------------------------
    6. Form fields
    -------------------------------------------------------------------------- */
 .bmi-form {
@@ -165,6 +230,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.form-group[hidden] {
+  display: none;
 }
 
 .form-group label {
@@ -209,6 +278,54 @@ body {
 }
 .form-group input[type='number'] {
   -moz-appearance: textfield;
+}
+
+/* Invalid state, toggled via aria-invalid by script.js */
+.form-group input[aria-invalid='true'] {
+  border-color: var(--color-obese);
+  background: #fef2f2;
+}
+
+.form-group input[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+.field-error {
+  min-height: 1em;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-obese);
+}
+
+.field-error:empty {
+  display: none;
+}
+
+/* Feet + inches side-by-side pair */
+.group-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
+}
+
+.dual-input {
+  display: flex;
+  gap: 12px;
+}
+
+.dual-input-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dual-input-item label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
 }
 
 /* --------------------------------------------------------------------------
@@ -283,12 +400,25 @@ body {
 
 /* When script.js adds content, also add class "has-result" to reveal the card */
 .result-card.has-result {
-  max-height: 240px;
+  max-height: 360px;
   padding: 22px 20px;
   margin-top: 24px;
   background: #f9fafb;
   border: 1.5px solid var(--color-border);
   box-shadow: var(--shadow-soft);
+}
+
+/* Inner wrapper is what actually fades/slides in; the outer .result-card only
+   handles the height animation so the two transitions don't fight each other. */
+.result-content {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+.result-card.has-result .result-content {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .result-card .bmi-value {
@@ -311,6 +441,60 @@ body {
 .result-card .bmi-message {
   font-size: 0.88rem;
   color: var(--color-text-muted);
+}
+
+.result-card .bmi-conversion {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+}
+
+/* BMI gauge: a gradient track spanning the WHO scale with a marker dot that
+   script.js positions using --gauge-position (0%–100%). */
+.bmi-gauge {
+  margin: 14px 0 10px;
+}
+
+.gauge-track {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-underweight) 0%,
+    var(--color-underweight) 18%,
+    var(--color-normal) 18%,
+    var(--color-normal) 45%,
+    var(--color-overweight) 45%,
+    var(--color-overweight) 62%,
+    var(--color-obese) 62%,
+    var(--color-obese) 100%
+  );
+}
+
+.gauge-marker {
+  position: absolute;
+  top: 50%;
+  left: var(--gauge-position, 0%);
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border: 3px solid var(--color-text);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.35);
+  transform: translate(-50%, -50%);
+  transition: left var(--transition-medium);
+}
+
+.gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 /* Category color variants */
@@ -347,7 +531,153 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   9. Responsive breakpoints
+   9. History section
+   -------------------------------------------------------------------------- */
+.history-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+  animation: fade-in-up var(--transition-medium);
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.history-header h3 {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.link-btn {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: color var(--transition-fast);
+}
+
+.link-btn:hover {
+  color: var(--color-blue-dark);
+  text-decoration: underline;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 190px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #f9fafb;
+  border: 1px solid var(--color-border);
+}
+
+.history-item .history-bmi {
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.history-item .history-meta {
+  color: var(--color-text-muted);
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+.history-item.underweight .history-bmi {
+  color: var(--color-underweight);
+}
+.history-item.normal .history-bmi {
+  color: var(--color-normal);
+}
+.history-item.overweight .history-bmi {
+  color: var(--color-overweight);
+}
+.history-item.obese .history-bmi {
+  color: var(--color-obese);
+}
+
+/* --------------------------------------------------------------------------
+   10. Animations
+   -------------------------------------------------------------------------- */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. Dark mode
+   Activated by script.js setting data-theme="dark" on <html>, persisted
+   in localStorage. Only the color tokens change; layout stays identical.
+   -------------------------------------------------------------------------- */
+:root[data-theme='dark'] {
+  --color-blue-light: rgba(37, 99, 235, 0.18);
+  --color-green-light: rgba(16, 185, 129, 0.16);
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-border: #334155;
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-hover: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme='dark'] .unit-toggle {
+  background: #0f172a;
+}
+
+:root[data-theme='dark'] .form-group input[type='number'] {
+  background: #0f172a;
+}
+
+:root[data-theme='dark'] .form-group input[type='number']:focus {
+  background: #0f172a;
+}
+
+:root[data-theme='dark'] .form-group input[aria-invalid='true'] {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+:root[data-theme='dark'] #reset-btn {
+  background: #0f172a;
+}
+
+:root[data-theme='dark'] #reset-btn:hover {
+  background: #1e293b;
+}
+
+:root[data-theme='dark'] .result-card.has-result,
+:root[data-theme='dark'] .history-item {
+  background: #0f172a;
+}
+
+/* --------------------------------------------------------------------------
+   12. Responsive breakpoints
    -------------------------------------------------------------------------- */
 
 /* Tablet */
@@ -388,5 +718,14 @@ body {
 
   .result-card .bmi-value {
     font-size: 1.8rem;
+  }
+
+  .unit-btn {
+    font-size: 0.78rem;
+    padding: 9px 4px;
+  }
+
+  .dual-input {
+    gap: 8px;
   }
 }

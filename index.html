@@ -12,7 +12,19 @@
 
   <!-- Site header -->
   <header class="site-header">
-    <h1>BMI Calculator</h1>
+    <div class="header-bar">
+      <h1>BMI Calculator</h1>
+      <!-- Dark mode toggle; state is persisted in localStorage by script.js -->
+      <button
+        type="button"
+        id="theme-toggle"
+        class="theme-toggle"
+        aria-pressed="false"
+        aria-label="Toggle dark mode"
+      >
+        <span aria-hidden="true">🌙</span>
+      </button>
+    </div>
   </header>
 
   <!-- Main content area containing the calculator -->
@@ -27,35 +39,94 @@
       </p>
     </section>
 
-    <!-- Form containing the BMI input fields and action buttons -->
-    <form class="bmi-form" id="bmi-form">
+    <!-- Unit system toggle: switches the form between metric and imperial fields -->
+    <div class="unit-toggle" role="group" aria-label="Unit system">
+      <button type="button" id="unit-metric-btn" class="unit-btn is-active" aria-pressed="true">
+        Metric (kg/cm)
+      </button>
+      <button type="button" id="unit-imperial-btn" class="unit-btn" aria-pressed="false">
+        Imperial (lb/ft-in)
+      </button>
+    </div>
 
-      <!-- Height input field (in centimeters) -->
-      <div class="form-group">
-        <label for="height">Height (cm)</label>
+    <!-- Form containing the BMI input fields and action buttons -->
+    <form class="bmi-form" id="bmi-form" novalidate>
+
+      <!-- Metric height input (cm) -->
+      <div class="form-group" id="height-metric-group">
+        <label for="height-cm">Height (cm)</label>
         <input
           type="number"
-          id="height"
-          name="height"
+          id="height-cm"
+          name="height-cm"
           placeholder="e.g. 170"
-          min="1"
           step="0.1"
-          required
+          inputmode="decimal"
+          aria-describedby="height-cm-error"
         />
+        <p class="field-error" id="height-cm-error" role="alert"></p>
       </div>
 
-      <!-- Weight input field (in kilograms) -->
-      <div class="form-group">
-        <label for="weight">Weight (kg)</label>
+      <!-- Imperial height input (feet + inches); hidden until imperial units are selected -->
+      <div class="form-group" id="height-imperial-group" hidden>
+        <span class="group-label" id="height-imperial-label">Height (ft & in)</span>
+        <div class="dual-input" role="group" aria-labelledby="height-imperial-label">
+          <div class="dual-input-item">
+            <label for="height-ft">Feet</label>
+            <input
+              type="number"
+              id="height-ft"
+              name="height-ft"
+              placeholder="e.g. 5"
+              step="1"
+              inputmode="numeric"
+              aria-describedby="height-imperial-error"
+            />
+          </div>
+          <div class="dual-input-item">
+            <label for="height-in">Inches</label>
+            <input
+              type="number"
+              id="height-in"
+              name="height-in"
+              placeholder="e.g. 7"
+              step="0.1"
+              inputmode="decimal"
+              aria-describedby="height-imperial-error"
+            />
+          </div>
+        </div>
+        <p class="field-error" id="height-imperial-error" role="alert"></p>
+      </div>
+
+      <!-- Metric weight input (kg) -->
+      <div class="form-group" id="weight-metric-group">
+        <label for="weight-kg">Weight (kg)</label>
         <input
           type="number"
-          id="weight"
-          name="weight"
+          id="weight-kg"
+          name="weight-kg"
           placeholder="e.g. 65"
-          min="1"
           step="0.1"
-          required
+          inputmode="decimal"
+          aria-describedby="weight-kg-error"
         />
+        <p class="field-error" id="weight-kg-error" role="alert"></p>
+      </div>
+
+      <!-- Imperial weight input (lb); hidden until imperial units are selected -->
+      <div class="form-group" id="weight-imperial-group" hidden>
+        <label for="weight-lb">Weight (lb)</label>
+        <input
+          type="number"
+          id="weight-lb"
+          name="weight-lb"
+          placeholder="e.g. 143"
+          step="0.1"
+          inputmode="decimal"
+          aria-describedby="weight-lb-error"
+        />
+        <p class="field-error" id="weight-lb-error" role="alert"></p>
       </div>
 
       <!-- Action buttons: Calculate and Reset -->
@@ -68,7 +139,36 @@
 
     <!-- Result card: populated dynamically by script.js, empty on load -->
     <section class="result-card" id="result-card" aria-live="polite">
-      <!-- BMI value, category, and message will be inserted here by JavaScript -->
+      <div class="result-content" id="result-content" hidden>
+
+        <span class="bmi-value" id="bmi-value">0</span>
+        <span class="bmi-category" id="bmi-category">—</span>
+
+        <!-- Color-coded BMI gauge showing where the result falls on the WHO scale -->
+        <div class="bmi-gauge" id="bmi-gauge">
+          <div class="gauge-track">
+            <span class="gauge-marker" id="gauge-marker"></span>
+          </div>
+          <div class="gauge-labels" aria-hidden="true">
+            <span>Underweight</span>
+            <span>Normal</span>
+            <span>Overweight</span>
+            <span>Obese</span>
+          </div>
+        </div>
+
+        <p class="bmi-message" id="bmi-message"></p>
+        <p class="bmi-conversion" id="bmi-conversion"></p>
+      </div>
+    </section>
+
+    <!-- History of past calculations, stored in localStorage; hidden until an entry exists -->
+    <section class="history-section" id="history-section" hidden aria-label="Calculation history">
+      <div class="history-header">
+        <h3>History</h3>
+        <button type="button" id="clear-history-btn" class="link-btn">Clear</button>
+      </div>
+      <ul class="history-list" id="history-list"></ul>
     </section>
 
   </main>
