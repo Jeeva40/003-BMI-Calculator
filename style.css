@@ -1,0 +1,392 @@
+/* ==========================================================================
+   BMI Calculator — Stylesheet
+   Theme: Professional healthcare (white base, blue + green accents)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Font import
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+/* --------------------------------------------------------------------------
+   2. Design tokens (CSS custom properties)
+   Centralised palette, spacing and shadow values so every component
+   pulls from the same source of truth.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Brand colors */
+  --color-blue: #2563eb;
+  --color-blue-dark: #1d4ed8;
+  --color-blue-light: #eaf2ff;
+  --color-green: #10b981;
+  --color-green-dark: #059669;
+  --color-green-light: #e7f9f3;
+
+  /* BMI category colors */
+  --color-underweight: #3b82f6;
+  --color-normal: #10b981;
+  --color-overweight: #f59e0b;
+  --color-obese: #ef4444;
+
+  /* Neutrals */
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-border: #e5e7eb;
+
+  /* Shape & elevation */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-soft: 0 4px 16px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-hover: 0 14px 34px rgba(15, 23, 42, 0.12);
+
+  /* Motion */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.35s ease;
+
+  /* Typography */
+  --font-heading: 'Poppins', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   3. Reset & base styles
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-bg);
+  background-image:
+    radial-gradient(circle at 10% 10%, var(--color-blue-light) 0%, transparent 45%),
+    radial-gradient(circle at 90% 90%, var(--color-green-light) 0%, transparent 45%);
+  background-attachment: fixed;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  line-height: 1.6;
+  padding: 24px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Header & footer
+   -------------------------------------------------------------------------- */
+.site-header {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  padding: 12px 0 8px;
+}
+
+.site-header h1 {
+  font-family: var(--font-heading);
+  font-size: 1.9rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--color-blue) 0%, var(--color-green) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.site-footer {
+  width: 100%;
+  text-align: center;
+  padding: 24px 0 12px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   5. Calculator card (main container)
+   -------------------------------------------------------------------------- */
+.calculator {
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 40px 36px;
+  margin: 12px 0;
+  transition: box-shadow var(--transition-medium);
+}
+
+.calculator:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Intro / title block */
+.intro {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.intro h2 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.intro .description {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  max-width: 38ch;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   6. Form fields
+   -------------------------------------------------------------------------- */
+.bmi-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
+}
+
+.form-group input[type='number'] {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: #f9fafb;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 13px 16px;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.form-group input[type='number']::placeholder {
+  color: #9ca3af;
+}
+
+.form-group input[type='number']:hover {
+  border-color: #cbd5e1;
+}
+
+.form-group input[type='number']:focus {
+  background: #ffffff;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+/* Remove number input spinners for a cleaner, modern look */
+.form-group input[type='number']::-webkit-outer-spin-button,
+.form-group input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.form-group input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* --------------------------------------------------------------------------
+   7. Buttons
+   -------------------------------------------------------------------------- */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.form-actions button {
+  flex: 1;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background var(--transition-fast), color var(--transition-fast);
+}
+
+#calculate-btn {
+  color: #ffffff;
+  background: linear-gradient(90deg, var(--color-blue) 0%, var(--color-green) 100%);
+  box-shadow: var(--shadow-soft);
+}
+
+#calculate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
+}
+
+#calculate-btn:active {
+  transform: translateY(0);
+}
+
+#reset-btn {
+  color: var(--color-text);
+  background: #f3f4f6;
+  border: 1.5px solid var(--color-border);
+}
+
+#reset-btn:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+#reset-btn:active {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   8. Result card
+   Empty by default (no border/shadow) — becomes a visible card once
+   script.js populates it and toggles a category class:
+   .result-card.underweight | .normal | .overweight | .obese
+   -------------------------------------------------------------------------- */
+.result-card {
+  margin-top: 24px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 20px;
+  border: 0 solid transparent;
+  transition: max-height var(--transition-medium), padding var(--transition-medium),
+    margin var(--transition-medium), box-shadow var(--transition-fast);
+}
+
+/* When script.js adds content, also add class "has-result" to reveal the card */
+.result-card.has-result {
+  max-height: 240px;
+  padding: 22px 20px;
+  margin-top: 24px;
+  background: #f9fafb;
+  border: 1.5px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+}
+
+.result-card .bmi-value {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.result-card .bmi-category {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.result-card .bmi-message {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+/* Category color variants */
+.result-card.underweight .bmi-value,
+.result-card.underweight .bmi-category {
+  color: var(--color-underweight);
+}
+.result-card.underweight .bmi-category {
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.result-card.normal .bmi-value,
+.result-card.normal .bmi-category {
+  color: var(--color-normal);
+}
+.result-card.normal .bmi-category {
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.result-card.overweight .bmi-value,
+.result-card.overweight .bmi-category {
+  color: var(--color-overweight);
+}
+.result-card.overweight .bmi-category {
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.result-card.obese .bmi-value,
+.result-card.obese .bmi-category {
+  color: var(--color-obese);
+}
+.result-card.obese .bmi-category {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsive breakpoints
+   -------------------------------------------------------------------------- */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .calculator {
+    max-width: 420px;
+    padding: 34px 28px;
+  }
+
+  .site-header h1 {
+    font-size: 1.7rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  body {
+    padding: 16px;
+  }
+
+  .calculator {
+    max-width: 100%;
+    padding: 28px 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .site-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .intro h2 {
+    font-size: 1.2rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .result-card .bmi-value {
+    font-size: 1.8rem;
+  }
+}
